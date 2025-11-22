@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>صفحه ۳ — تعریف مجموعه A</title>
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma,sans-serif;}
+body{background:#c0e0a0;color:#222;}
+.container{max-width:980px;margin:12px auto;padding:12px;position:relative;}
+
+/* پروفایل */
+.profile-container{position:absolute;top:12px;right:12px;display:flex;align-items:center;cursor:pointer;}
+.profile-container img{width:45px;height:45px;border-radius:50%;border:2px solid #4caf50;object-fit:cover;}
+.profile-popup{position:absolute;top:60px;right:0;background:#d0f0c0;padding:12px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.2);display:none;width:250px;}
+.profile-popup button{width:100%;margin:4px 0;padding:6px;border:none;border-radius:6px;background:#1976d2;color:white;cursor:pointer;transition:0.2s;}
+
+/* فرم مجموعه و شرط */
+.form-section{background:#c8e6c9;padding:12px;border-radius:10px;margin-top:60px;margin-bottom:12px;}
+label{margin-top:8px;display:block;}
+select,input,button{width:95%;padding:8px;margin:6px auto;display:block;border-radius:8px;border:1px solid #9e9e9e;font-size:14px;}
+.result-box{background:white;padding:10px;margin-top:10px;border-radius:10px;min-height:40px;box-shadow:0 3px 8px rgba(0,0,0,0.08);}
+canvas{border:1px solid #aaa;border-radius:10px;margin-top:10px;}
+button.navBtn{background:#4caf50;color:white;margin-top:12px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- پروفایل -->
+  <div class="profile-container" id="profileContainer">
+    <img id="profileImg" src="">
+    <div class="profile-popup" id="profilePopup">
+      <button id="editProfileBtn">ویرایش</button>
+      <button id="viewScoresBtn">امتیازها</button>
+      <button id="viewSavedBtn">ذخیره شده‌ها</button>
+    </div>
+  </div>
+
+  <!-- فرم مجموعه -->
+  <div class="form-section">
+    <label for="knownSetSelect">عضو کدام مجموعه شناخته شده است؟</label>
+    <select id="knownSetSelect">
+      <option value="">انتخاب کنید</option>
+      <option value="N">N (طبیعی)</option>
+      <option value="W">W (صفر و طبیعی)</option>
+      <option value="Z">Z (صحیح)</option>
+      <option value="Q">Q (گویا)</option>
+      <option value="I">I (گنگ)</option>
+      <option value="R">R (حقیقی)</option>
+    </select>
+    <label for="textCondition">شرط کلامی مجموعه A را وارد کنید:</label>
+    <input type="text" id="textCondition" placeholder="مثال: بزرگتر مساوی 3 و کوچکتر از 7">
+    <button onclick="showMath()">نمایش نماد ریاضی</button>
+  </div>
+
+  <!-- نتیجه ریاضی -->
+  <div class="result-box" id="mathResult">نماد ریاضی در اینجا نمایش داده می‌شود</div>
+
+  <!-- نمودار و محور -->
+  <canvas id="vennCanvas" width="420" height="160"></canvas>
+  <canvas id="axisCanvas" width="420" height="140"></canvas>
+
+  <!-- نمایش اعضا -->
+  <div class="result-box" id="membersDisplay">اعضا در اینجا نمایش داده می‌شود</div>
+
+  <!-- دکمه رفتن به صفحه ۴ -->
+  <button class="navBtn" onclick="location.href='page4.html'">انجام عملیات ریاضی</button>
+
+</div>
+
+<script src="sharedProfile.js"></script>
+<script src="page3_functions.js"></script>
+</body>
+</html>

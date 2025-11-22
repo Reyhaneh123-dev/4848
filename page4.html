@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>صفحه ۴ — عملیات و نمونه سوال‌ها</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- پروفایل -->
+  <div class="profile-container" id="profileContainer">
+    <img id="profileImg" src="">
+    <div class="profile-popup" id="profilePopup">
+      <button id="editProfileBtn">ویرایش</button>
+      <button id="viewScoresBtn">امتیازها</button>
+      <button id="viewSavedBtn">ذخیره شده‌ها</button>
+    </div>
+  </div>
+
+  <h3>انتخاب مجموعه A:</h3>
+  <select id="selectA" onchange="handleSelectAChange()">
+    <option value="">انتخاب...</option>
+    <option value="prev">مجموعه صفحه قبل</option>
+    <option value="new">مجموعه جدید</option>
+  </select>
+  <div id="ABox" class="result-box"></div>
+
+  <div id="newAOptions" class="hidden">
+    <label>نوع نمایش مجموعه A:</label>
+    <select id="newADisplay" onchange="handleNewADisplayChange()">
+      <option value="">انتخاب...</option>
+      <option value="members">نوشتن اعضا</option>
+      <option value="math">نماد ریاضی</option>
+      <option value="knownSet">مجموعه شناخته شده</option>
+    </select>
+  </div>
+
+  <div id="membersInputDiv" class="hidden">
+    <label>اعضا:</label>
+    <div style="position:relative;">
+      <span style="position:absolute;left:0;top:50%;transform:translateY(-50%);">{"}</span>
+      <input type="text" id="membersInput" placeholder="عددها را وارد کنید" style="padding-left:12px;" oninput="handleMembersInput('A')">
+      <span style="position:absolute;right:0;top:50%;transform:translateY(-50%);">{"}</span>
+    </div>
+    <small style="color:gray;">هر فاصله یک کاما محسوب می‌شود</small>
+  </div>
+
+  <div id="mathInputDiv" class="hidden">
+    <label>شرط کلامی:</label>
+    <input type="text" id="mathInput" placeholder="مثال: بزرگتر مساویه 3 و کوچکتر از 7">
+    <label>عضو کدام مجموعه شناخته شده است؟</label>
+    <select id="knownSetSelectMath">
+      <option value="">انتخاب...</option>
+      <option value="N">N — اعداد طبیعی</option>
+      <option value="W">W — اعداد حسابی</option>
+      <option value="Z">Z — اعداد صحیح</option>
+      <option value="Q">Q — اعداد گویا</option>
+      <option value="I">I — اعداد گنگ</option>
+      <option value="R">R — اعداد حقیقی</option>
+    </select>
+    <button onclick="displayMath('A')">نمایش نماد ریاضی</button>
+    <button onclick="saveSet('A')">ثبت مجموعه A</button>
+    <div class="result-box" id="mathResult"></div>
+  </div>
+
+  <div id="knownSetDiv" class="hidden">
+    <label>انتخاب مجموعه شناخته شده:</label>
+    <select id="knownSetSelectNew">
+      <option value="">انتخاب...</option>
+      <option value="N">N — اعداد طبیعی</option>
+      <option value="W">W — اعداد حسابی</option>
+      <option value="Z">Z — اعداد صحیح</option>
+      <option value="Q">Q — اعداد گویا</option>
+      <option value="I">I — اعداد گنگ</option>
+      <option value="R">R — اعداد حقیقی</option>
+    </select>
+    <button onclick="saveSet('A')">ثبت مجموعه A</button>
+  </div>
+
+  <hr>
+
+  <h3>انتخاب مجموعه B:</h3>
+  <label>نوع نمایش مجموعه B:</label>
+  <select id="displayB" onchange="handleNewADisplayChangeB()">
+    <option value="">انتخاب...</option>
+    <option value="members">نوشتن اعضا</option>
+    <option value="math">نماد ریاضی</option>
+    <option value="knownSet">مجموعه شناخته شده</option>
+  </select>
+  <div id="BInputDiv"></div>
+
+  <hr>
+  <label>انتخاب عملیات روی A و B:</label>
+  <select id="operationSelect">
+    <option value="union">اجتماع (∪)</option>
+    <option value="intersection">اشتراک (∩)</option>
+    <option value="difference">تفاضل (-)</option>
+    <option value="subset">زیرمجموعه بودن (⊆)</option>
+  </select>
+  <button onclick="doOperation()">انجام عملیات ریاضی</button>
+  <div id="operationResult" class="result-box"></div>
+
+  <button onclick="goSurvey()" style="margin-top:20px;">نمونه سوال‌ها</button>
+
+</div>
+
+<script src="sharedProfile.js"></script>
+<script src="page4_functions.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحه ۵ — نظر سنجی</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<h2>نظر سنجی</h2>
+<label>نظر خود را درباره آزمایشگاه مجموعه‌ها بنویسید:</label>
+<textarea id="surveyText" style="width:95%;height:100px;margin:10px auto;display:block;"></textarea>
+<button onclick="submitSurvey()">ارسال نظر</button>
+<button onclick="window.location.href='page3.html'">بازگشت به صفحه ۳</button>
+</div>
+
+<script>
+function submitSurvey(){
+  const text = document.getElementById('surveyText').value.trim();
+  if(!text){ alert('لطفاً متن نظر خود را وارد کنید'); return; }
+  let surveys = JSON.parse(localStorage.getItem('surveys') || '[]');
+  surveys.push(text);
+  localStorage.setItem('surveys', JSON.stringify(surveys));
+  alert('نظر شما ثبت شد');
+  document.getElementById('surveyText').value='';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحه ۲ — ورود اطلاعات کاربر</title>
+<style>
+body { background:#d0f0c0; font-family:Tahoma,sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+.container { text-align:center; }
+input { display:block; margin:12px auto; padding:8px; border-radius:8px; border:1px solid #9e9e9e; font-size:16px; width:200px; }
+button { padding:10px 20px; background:#1976d2; color:white; border:none; border-radius:8px; cursor:pointer; margin-top:12px; }
+#profileCircleLarge { width:80px; height:80px; border-radius:50%; border:2px solid #4caf50; margin:12px auto; cursor:pointer; object-fit:cover; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div>
+    <div id="profileCircleLarge">
+      <img id="profileImgLarge" src="default.png" alt="پروفایل" style="width:100%; height:100%; border-radius:50%;">
+    </div>
+    <input type="text" id="firstName" placeholder="نام">
+    <input type="text" id="lastName" placeholder="نام خانوادگی">
+    <button id="saveContinueBtn">ذخیره و ادامه</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('profileCircleLarge').onclick = function(){
+  const fileInput = document.createElement('input');
+  fileInput.type='file'; fileInput.accept='image/*';
+  fileInput.onchange = e=>{
+    const reader = new FileReader();
+    reader.onload = function(){ 
+      localStorage.setItem('profileImage', reader.result); 
+      document.getElementById('profileImgLarge').src = reader.result; 
+    }
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  fileInput.click();
+}
+
+document.getElementById('saveContinueBtn').onclick = function(){
+  const first = document.getElementById('firstName').value.trim();
+  const last = document.getElementById('lastName').value.trim();
+  if(!first || !last){ alert('لطفاً نام و نام خانوادگی را وارد کنید'); return; }
+  localStorage.setItem('userName', first);
+  localStorage.setItem('userLastName', last);
+  window.location.href='page3.html';
+}
+</script>
+</body>
+</html>
