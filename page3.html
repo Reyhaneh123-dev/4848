@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>صفحه ۳ — تعریف مجموعه A</title>
-<link rel="stylesheet" href="style.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma,sans-serif;}
 body{background:#c0e0a0;color:#222;}
@@ -30,7 +29,7 @@ button.navBtn{background:#4caf50;color:white;margin-top:12px;}
 
   <!-- پروفایل -->
   <div class="profile-container" id="profileContainer">
-    <img id="profileImg" src="">
+    <img id="profileImg" src="" alt="پروفایل">
     <div class="profile-popup" id="profilePopup">
       <button id="editProfileBtn">ویرایش</button>
       <button id="viewScoresBtn">امتیازها</button>
@@ -52,7 +51,7 @@ button.navBtn{background:#4caf50;color:white;margin-top:12px;}
     </select>
     <label for="textCondition">شرط کلامی مجموعه A را وارد کنید:</label>
     <input type="text" id="textCondition" placeholder="مثال: بزرگتر مساوی 3 و کوچکتر از 7">
-    <button onclick="showMath()">نمایش نماد ریاضی</button>
+    <button id="showMathBtn">نمایش نماد ریاضی</button>
   </div>
 
   <!-- نتیجه ریاضی -->
@@ -70,7 +69,140 @@ button.navBtn{background:#4caf50;color:white;margin-top:12px;}
 
 </div>
 
-<script src="sharedProfile.js"></script>
-<script src="page3_functions.js"></script>
+<script>
+// پروفایل
+const profileContainer = document.getElementById('profileContainer');
+const profilePopup = document.getElementById('profilePopup');
+const profileImg = document.getElementById('profileImg');
+
+function loadProfile(){ 
+  profileImg.src = localStorage.getItem('profileImage') || 'https://via.placeholder.com/45?text=؟'; 
+}
+loadProfile();
+profileContainer.onclick = ()=> profilePopup.style.display = profilePopup.style.display==='block'?'none':'block';
+
+// تبدیل کلامی به ریاضی
+function convertToMath(condText){
+  let cond = condText.trim();
+  cond = cond.replace(/از/gi,'')
+             .replace(/بزرگتر مساوی/gi,"≥")
+             .replace(/کوچکتر مساوی/gi,"≤")
+             .replace(/بزرگتر/gi,">")
+             .replace(/کوچکتر/gi,"<")
+             .replace(/مساوی/gi,"=")
+             .replace(/و/gi," ∧ ")
+             .replace(/یا/gi," ∨ ");
+  let parts = cond.split(/ ∧ | ∨ /);
+  let newParts = parts.map(p=>"x"+p.trim());
+  return newParts.join(", ");
+}
+
+// استخراج اعداد
+function extractNumbers(condText){
+  const nums = condText.match(/-?\d+/g);
+  return nums? nums.map(n=>parseInt(n,10)):[];  
+}
+
+// نمایش ریاضی و ذخیره
+document.getElementById('showMathBtn').onclick = function(){
+  const condText = document.getElementById('textCondition').value.trim();
+  const set = document.getElementById('knownSetSelect').value;
+  if(!set){ alert('لطفاً یک مجموعه شناخته شده انتخاب کنید'); return; }
+  if(!condText){ alert('لطفاً شرط را وارد کنید'); return; }
+  const mathCond = convertToMath(condText);
+  const mathExpr = `{ x ∈ ${set} | (${mathCond}) }`;
+  document.getElementById('mathResult').innerText = mathExpr;
+
+  // ذخیره برای صفحه بعد
+  localStorage.setItem('page3_mathExpr', mathExpr);
+  localStorage.setItem('page3_condText', condText);
+  localStorage.setItem('page3_set', set);
+
+  showVenn();
+  showAxis();
+  showMembers();
+}
+
+// نمودار ون
+function showVenn(){
+  const canvas = document.getElementById('vennCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const set = document.getElementById('knownSetSelect').value;
+  const nums = extractNumbers(document.getElementById('textCondition').value);
+
+  if(!['N','W','Z'].includes(set) || nums.length===0){
+    ctx.font='16px Tahoma'; ctx.fillStyle='red'; ctx.textAlign='center';
+    ctx.fillText('نمایش نمودار امکان‌پذیر نیست',canvas.width/2,canvas.height/2);
+    return;
+  }
+
+  const lower = nums[0], upper = nums[1]||null;
+  let arr = [];
+  if(upper!==null) for(let i=lower;i<=upper;i++) arr.push(i);
+  else for(let i=lower;i<lower+5;i++) arr.push(i);
+
+  const cx = canvas.width/2, cy = canvas.height/2, r = 60;
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,2*Math.PI);
+  ctx.strokeStyle='blue'; ctx.lineWidth=2;
+  ctx.stroke();
+  ctx.fillStyle='black'; ctx.font='14px Tahoma'; ctx.textAlign='center';
+  arr.forEach((n,i)=>{ctx.fillText(n,cx - r/2 + i*18, cy);});
+}
+
+// محور پیشرفته
+function showAxis(){
+  const canvas = document.getElementById('axisCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const set = document.getElementById('knownSetSelect').value;
+  const nums = extractNumbers(document.getElementById('textCondition').value);
+
+  if(nums.length===0) return;
+  const lower = nums[0], upper = nums[1]||null;
+  const finite = upper!==null;
+  let arr = finite ? Array.from({length:upper-lower+1},(_,i)=>lower+i) : Array.from({length:5},(_,i)=>lower+i);
+  const spacing=(canvas.width-80)/(arr.length+1);
+
+  ctx.strokeStyle='black'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(40,canvas.height/2); ctx.lineTo(canvas.width-40,canvas.height/2); ctx.stroke();
+  arr.forEach((n,i)=>{
+    const xPos=40+spacing*(i+1);
+    ctx.beginPath(); ctx.arc(xPos,canvas.height/2,5,0,2*Math.PI); ctx.fill();
+    ctx.fillText(n,xPos,canvas.height/2-12);
+  });
+
+  if(finite){
+    const rectStartX=40+spacing*0.5;
+    const rectEndX=40+spacing*(arr.length+0.5);
+    ctx.strokeStyle='blue'; ctx.lineWidth=2;
+    ctx.strokeRect(rectStartX-10,canvas.height/2-15,rectEndX-rectStartX+20,30);
+  }
+}
+
+// نمایش اعضا
+function showMembers(){
+  const set = document.getElementById('knownSetSelect').value;
+  const nums = extractNumbers(document.getElementById('textCondition').value);
+  const div = document.getElementById('membersDisplay');
+
+  if(!['N','W','Z'].includes(set) || nums.length===0){
+    div.innerText='اعضا قابل نمایش نیست';
+    return;
+  }
+
+  const lower = nums[0], upper = nums[1]||null;
+  let arr = [];
+  if(upper!==null){
+    for(let i=lower;i<=upper;i++) arr.push(i);
+  } else {
+    for(let i=lower;i<lower+5;i++) arr.push(i);
+  }
+  div.innerText = `{ ${arr.join(', ')}${upper===null?' ...':''} }`;
+}
+</script>
 </body>
 </html>
